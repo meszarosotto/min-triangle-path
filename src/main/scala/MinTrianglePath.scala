@@ -25,16 +25,45 @@ object MinTrianglePath extends App {
   def traverseTreeBreadthFirst[T](tree: T)(getChildren: T => List[T]): LazyList[T] = {
     import scala.collection.immutable.Queue
 
-    def traverseQueue(unvisited: Queue[T]): LazyList[T] = {
-      if (unvisited.isEmpty)
+    def traverseQueue(closed: Queue[T], opened: Queue[T], min: Int): LazyList[T] = {
+      if (closed.isEmpty)
         LazyList.empty
       else
-        unvisited.dequeue match {
+        closed.dequeue match {
           case (node, tail) =>
-            node #:: traverseQueue(tail ++ getChildren(node))
+
+            val updatedNode: T = node match {
+
+              case current: Tree.Branch => // update the cost of the left and right branch
+                val leftChild = if(current.value + current.leftCost < current.left.value)
+                  current.left match {
+                    case t: Tree.Leaf => t.copy(value = current.value + current.leftCost)
+                    case t: Tree.Branch => t.copy(value = current.value + current.leftCost)
+                  } else current.left
+                val rightChild = if(current.value + current.rightCost < current.right.value)
+                  current.right match {
+                    case t: Tree.Leaf => t.copy(value = current.value + current.rightCost)
+                    case t: Tree.Branch => t.copy(value = current.value + current.rightCost)
+                  } else current.right
+                current.copy(left = leftChild, right = rightChild).asInstanceOf[T]
+
+              case current: Tree.Leaf => current.asInstanceOf[T] // cost unchanged
+            }
+
+            node #:: traverseQueue(tail, opened ++ List(updatedNode), min: Int)
         }
     }
 
-    tree #:: traverseQueue(Queue.empty ++ getChildren(tree))
+    tree #:: traverseQueue(Queue.empty.enqueue(tree),Queue.empty,0)
+  }
+
+  def traverseTreeDepthFirst[T](t: T)(getChildren: T => List[T]): LazyList[T] = {
+    def recurse(remainingNodes: List[T]): LazyList[T] = remainingNodes match {
+      case Nil =>
+        LazyList.empty
+      case h :: t =>
+        h #:: recurse(getChildren(h) ++ t)
+    }
+    recurse(List(t))
   }
 }
