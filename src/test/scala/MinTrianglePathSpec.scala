@@ -31,18 +31,18 @@ class MinTrianglePathSpec extends AnyFlatSpec with Matchers {
     val sampleTree: Tree = Tree.Branch(
       value = 0,
       left = Tree.Branch(
-        value = 1,
-        left = Tree.Leaf(2),
-        leftCost = 0,
-        right = Tree.Leaf(2),
-        rightCost = 0),
+        value = Int.MaxValue,
+        left = Tree.Leaf(Int.MaxValue),
+        leftCost = 3,
+        right = Tree.Leaf(Int.MaxValue),
+        rightCost = 8),
       leftCost = 6,
       right = Tree.Branch(
-        value = 1,
-        left = Tree.Leaf(2),
-        leftCost = 0,
-        right = Tree.Leaf(2),
-        rightCost = 0),
+        value = Int.MaxValue,
+        left = Tree.Leaf(Int.MaxValue),
+        leftCost = 8,
+        right = Tree.Leaf(Int.MaxValue),
+        rightCost = 5),
       rightCost = 3)
     traverseTreeBreadthFirst(sampleTree)(Tree.children).map(_.value).toList shouldBe List(0, 6, 3, 9, 14, 11, 8)
   }
