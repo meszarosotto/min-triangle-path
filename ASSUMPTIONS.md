@@ -46,5 +46,6 @@ Assume the data structure has it's is functionally equivalent pair in this probl
 │11│      │2 │      │10│      │9 │             │3 │      │3 │      │3 │      │3 │
 └──┘      └──┘      └──┘      └──┘             └──┘      └──┘      └──┘      └──┘
 ```
+[16:25]
 
 
